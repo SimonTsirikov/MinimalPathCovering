@@ -4,7 +4,7 @@ all : main test
 
 cpp_files := $(wildcard *.cpp)
 
-CXXFLAGS=-O3 -Wall -std=c++17 $(shell llvm-config --cxxflags --ldflags --libs --system-libs)
+CXXFLAGS=-O3 -Wall -Wno-unused-value $(shell llvm-config --cxxflags --ldflags --libs --system-libs) -std=c++17
 
 $(cpp_files:%.cpp=%.o) : %.o : %.cpp | .
 	$(CXX) $(CXXFLAGS) -c -o $@ $<
