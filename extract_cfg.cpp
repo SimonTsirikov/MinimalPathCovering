@@ -7,10 +7,10 @@ using namespace std;
 
 struct MyVisitor : public InstVisitor<MyVisitor> {
 
-    map<string, vector<tuple<int, string> > >& cfg;
+    map<string, vector<tuple<float, string> > >& cfg;
     map<int, tuple<int, int> >& weights;
 
-    MyVisitor(map<string, vector<tuple<int, string> > >& _cfg, map<int, tuple<int, int> >&_weights): cfg(_cfg), weights(_weights) {};
+    MyVisitor(map<string, vector<tuple<float, string> > >& _cfg, map<int, tuple<int, int> >&_weights): cfg(_cfg), weights(_weights) {};
 
     string tmp_function_name;
 
@@ -22,14 +22,17 @@ struct MyVisitor : public InstVisitor<MyVisitor> {
         BasicBlock* from  = BI.getParent();
         string from_label = tmp_function_name + "_" + from->getName().str();
         int weight = 1;
-        int true_count  = 0;
-        int false_count = 0;
+        float true_weight  = 0;
+        float false_weight = 0;
 
         if (BI.getNumSuccessors() == 2 && BI.getDebugLoc()) {
             int line = BI.getDebugLoc().getLine();
             if (weights.count(line) != 0) {
-                true_count = get<0>(weights[line]);
-                false_count = get<1>(weights[line]);
+                int true_count  = get<0>(weights[line]);
+                int false_count = get<1>(weights[line]);
+                weight = 0;
+                true_weight  = (float) true_count  / (float) (true_count + false_count);
+                false_weight = (float) false_count / (float) (true_count + false_count);
             }
         }
 
@@ -39,10 +42,10 @@ struct MyVisitor : public InstVisitor<MyVisitor> {
             string to_label = tmp_function_name + "_" + to->getName().str();
 
             if (cfg.find(from_label) == cfg.end()) {
-                vector<tuple<int, string>> adj = {{weight + (i == 0 ? true_count : false_count), to_label}};
+                vector<tuple<float, string>> adj = {{weight + (i == 0 ? true_weight : false_weight), to_label}};
                 cfg.insert(make_pair(from_label, adj));
             } else {
-                cfg[from_label].push_back({weight + (i == 0 ? true_count : false_count), to_label});
+                cfg[from_label].push_back({weight + (i == 0 ? true_weight : false_weight), to_label});
             }
         }
     }
@@ -56,7 +59,7 @@ struct MyVisitor : public InstVisitor<MyVisitor> {
         string to_label   = F->getName().str() + "_" + to->getName().str();
 
         if (cfg.find(from_label) == cfg.end()) {
-            vector<tuple<int, string>> adj = {{1, to_label}};
+            vector<tuple<float, string>> adj = {{1, to_label}};
             cfg.insert(make_pair(from_label, adj));
         } else {
             cfg[from_label].push_back({1, to_label});
@@ -98,7 +101,7 @@ map<int, tuple<int, int> > make_weights(char* profiling_file_name) {
 }
 
 
-map<string, vector<tuple<int, string>>> make_cfg(char* ir_file_name, char* profiling_file_name) {
+map<string, vector<tuple<float, string>>> make_cfg(char* ir_file_name, char* profiling_file_name) {
 
     SMDiagnostic Err;
     LLVMContext Context;
@@ -110,7 +113,7 @@ map<string, vector<tuple<int, string>>> make_cfg(char* ir_file_name, char* profi
 
     map<int, tuple<int, int> > weights = make_weights(profiling_file_name);
 
-    map<string, vector<tuple<int, string> > > cfg;
+    map<string, vector<tuple<float, string> > > cfg;
     MyVisitor visitor(cfg, weights);
     visitor.visit(*Mod);
 

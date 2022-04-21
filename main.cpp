@@ -151,7 +151,7 @@ int main(int argc, char** argv)
 		return 1;
 	}
 	char* profiling_file = argc == 3 ? argv[2] : NULL;
-	map<string, vector<tuple<int, string>>> cfg = make_cfg(argv[1], profiling_file);
+	map<string, vector<tuple<float, string>>> cfg = make_cfg(argv[1], profiling_file);
 	map<string, int> vertex_ind;
 	map<int, string> rev_vertex_ind;
 
