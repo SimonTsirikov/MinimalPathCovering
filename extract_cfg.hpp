@@ -2,5 +2,7 @@
 #include <tuple>
 #include <map>
 #include <iostream>
+#include <fstream>
+#include <string>
 
-std::map<std::string, std::vector<std::tuple<int, std::string> > > make_cfg(char* file_name);
+std::map<std::string, std::vector<std::tuple<int, std::string> > > make_cfg(char* ir_file_name, char* profiling_file_name);

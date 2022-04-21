@@ -3,3 +3,5 @@
 #include "llvm/Support/SourceMgr.h"
 #include "llvm/IR/InstVisitor.h"
 #include "llvm/IR/BasicBlock.h"
+#include "llvm/IR/DebugLoc.h"
+#include "llvm/IR/DebugInfoMetadata.h"

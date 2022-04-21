@@ -15,7 +15,7 @@ main: main.o extract_cfg.o
 test : $(patsubst tests/%.c,do-%,$(wildcard tests/*.c))
 
 tests/%.ll : tests/%.c
-	clang -Wno-implicit-function-declaration -emit-llvm -fno-discard-value-names -S $< -o $@
+	clang -Wno-implicit-function-declaration -emit-llvm -fno-discard-value-names  -g -S $< -o $@
 
 test-rules = do-$(1) : tests/$(1).ll main
 

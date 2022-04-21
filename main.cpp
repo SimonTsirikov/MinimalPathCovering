@@ -147,11 +147,11 @@ int main(int argc, char** argv)
 
 	if (argc < 2)
 	{
-		cerr << "Usage: " << argv[0] << " <IR file>\n";
+		cerr << "Usage: " << argv[0] << " <IR file> [<profiling report>]\n";
 		return 1;
 	}
-
-	map<string, vector<tuple<int, string>>> cfg = make_cfg(argv[1]);
+	char* profiling_file = argc == 3 ? argv[2] : NULL;
+	map<string, vector<tuple<int, string>>> cfg = make_cfg(argv[1], profiling_file);
 	map<string, int> vertex_ind;
 	map<int, string> rev_vertex_ind;
 
