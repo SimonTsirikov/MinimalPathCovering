@@ -71,7 +71,7 @@ struct MyVisitor : public InstVisitor<MyVisitor> {
         while ((index = to_label.find(".")) != string::npos) {
             to_label.replace(index, 1, "_");
         }
-        if (!to_label.compare(0, 9, "llvm.dbg")) {
+        if (to_label.substr(0, 4) != "llvm") {
             if (cfg.find(from_label) == cfg.end()) {
                 vector<tuple<float, string>> adj = {{1, to_label}};
                 cfg.insert(make_pair(from_label, adj));
