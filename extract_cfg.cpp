@@ -57,12 +57,13 @@ struct MyVisitor : public InstVisitor<MyVisitor> {
 
         string from_label = tmp_function_name  + "_" + from->getName().str();
         string to_label   = F->getName().str() + "_" + to->getName().str();
-
-        if (cfg.find(from_label) == cfg.end()) {
-            vector<tuple<float, string>> adj = {{1, to_label}};
-            cfg.insert(make_pair(from_label, adj));
-        } else {
-            cfg[from_label].push_back({1, to_label});
+        if (!to_label.compare(0, 9, "llvm.dbg")) {
+            if (cfg.find(from_label) == cfg.end()) {
+                vector<tuple<float, string>> adj = {{1, to_label}};
+                cfg.insert(make_pair(from_label, adj));
+            } else {
+                cfg[from_label].push_back({1, to_label});
+            }
         }
     }
 };
