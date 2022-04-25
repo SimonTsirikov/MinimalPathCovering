@@ -160,19 +160,14 @@ int main(int argc, char** argv)
 	cout << "\nСontrol flow graph:\n";
 	for (auto const&[from, to_s]: cfg)
 	{
-		cout << from << " -> ";
 		if (vertex_ind.find(from) == vertex_ind.end())
 		{
 			vertex_ind[from] = ++from_ind;
 			rev_vertex_ind[from_ind] = from;
 		}
-		bool first = true;
 		for (auto const&[weight, to]: to_s)
 		{
-			if (!first)
-				cout << ", ";
-			first = false;
-			cout << weight << ":" << to;
+			cout << from << " -> " << to << " [ label=\"" << weight << "\" ];" << endl;
 			if (cfg.find(to) == cfg.end() && vertex_ind.find(to) == vertex_ind.end())
 			{
 				vertex_ind[to] = ++to_ind;
@@ -181,7 +176,6 @@ int main(int argc, char** argv)
 			if (1/weight > max_weight)
 				max_weight = 1/weight;
 		}
-		cout << endl;
 	}
 	auto cur_graph = graph(from_ind, to_ind, max_weight);
 	for (auto const&[from, to_s]: cfg)
@@ -209,7 +203,7 @@ int main(int argc, char** argv)
 			first = false;
 			cout << rev_vertex_ind[column_sub];
 		}
-		cout << endl;
+		cout << ";" << endl;
 	}
 	cout << endl;
 	return 0;

@@ -21,6 +21,10 @@ struct MyVisitor : public InstVisitor<MyVisitor> {
     void visitBranchInst(BranchInst &BI) {
         BasicBlock* from  = BI.getParent();
         string from_label = tmp_function_name + "_" + from->getName().str();
+        int index;
+        if ((index = from_label.find(".")) != string::npos) {
+            from_label.replace(index, 1, "_");
+        }
         int weight = 1;
         float true_weight  = 0;
         float false_weight = 0;
@@ -40,6 +44,9 @@ struct MyVisitor : public InstVisitor<MyVisitor> {
     
             BasicBlock* to  = BI.getSuccessor(i);
             string to_label = tmp_function_name + "_" + to->getName().str();
+            if ((index = to_label.find(".")) != string::npos) {
+                to_label.replace(index, 1, "_");
+            }
 
             if (cfg.find(from_label) == cfg.end()) {
                 vector<tuple<float, string>> adj = {{weight + (i == 0 ? true_weight : false_weight), to_label}};
