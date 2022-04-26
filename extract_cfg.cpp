@@ -97,15 +97,17 @@ map<int, tuple<int, int> > make_weights(char* profiling_file_name) {
                     size_t line_index_end  = line.find_first_of(":", branch_start+1);
                     size_t col_index_end   = line.find_first_of(")", line_index_end+1);
                     size_t true_count_end  = line.find_first_of(",", col_index_end+1);
-                    size_t false_count_end = line.find_first_of("]", true_count_end+1);
+                    if (true_count_end != string::npos) {
+                        size_t false_count_end = line.find_first_of("]", true_count_end+1);
 
-                    int line_index  = stoi(line.substr(branch_start+11, line_index_end-branch_start-11));
-                    // int col_index   = stoi(line.substr(line_index_end+1, col_index_end-line_index_end-1));
-                    int true_count  = stoi(line.substr(col_index_end+10, true_count_end-col_index_end-10));
-                    int false_count = stoi(line.substr(true_count_end+9, false_count_end-true_count_end-9));
+                        int line_index  = stoi(line.substr(branch_start+11, line_index_end-branch_start-11));
+                        // int col_index   = stoi(line.substr(line_index_end+1, col_index_end-line_index_end-1));
+                        int true_count  = stoi(line.substr(col_index_end+10, true_count_end-col_index_end-10));
+                        int false_count = stoi(line.substr(true_count_end+9, false_count_end-true_count_end-9));
 
-                    if (weights.count(line_index) == 0) {
-                        weights.insert({line_index, {true_count, false_count}});
+                        if (weights.count(line_index) == 0) {
+                            weights.insert({line_index, {true_count, false_count}});
+                        }
                     }
                 }
             }
