@@ -35,8 +35,10 @@ struct MyVisitor : public InstVisitor<MyVisitor> {
                 int true_count  = get<0>(weights[line]);
                 int false_count = get<1>(weights[line]);
                 weight = 0;
-                true_weight  = (float) true_count  / (float) (true_count + false_count);
-                false_weight = (float) false_count / (float) (true_count + false_count);
+                if (true_count + false_count != 0) {
+                    true_weight  = (float) true_count  / (float) (true_count + false_count);
+                    false_weight = (float) false_count / (float) (true_count + false_count);
+                }
             }
         }
 
