@@ -21,6 +21,10 @@ struct MyVisitor : public InstVisitor<MyVisitor> {
     void visitBranchInst(BranchInst &BI) {
         BasicBlock* from  = BI.getParent();
         string from_label = tmp_function_name + "_" + from->getName().str();
+        int index;
+        while ((index = from_label.find(".")) != string::npos) {
+            from_label.replace(index, 1, "_");
+        }
         int weight = 1;
         float true_weight  = 0;
         float false_weight = 0;
@@ -40,6 +44,9 @@ struct MyVisitor : public InstVisitor<MyVisitor> {
     
             BasicBlock* to  = BI.getSuccessor(i);
             string to_label = tmp_function_name + "_" + to->getName().str();
+            while ((index = to_label.find(".")) != string::npos) {
+                to_label.replace(index, 1, "_");
+            }
 
             if (cfg.find(from_label) == cfg.end()) {
                 vector<tuple<float, string>> adj = {{weight + (i == 0 ? true_weight : false_weight), to_label}};
@@ -56,8 +63,15 @@ struct MyVisitor : public InstVisitor<MyVisitor> {
         BasicBlock* to   = &F->getEntryBlock();
 
         string from_label = tmp_function_name  + "_" + from->getName().str();
+        int index;
+        while ((index = from_label.find(".")) != string::npos) {
+            from_label.replace(index, 1, "_");
+        }
         string to_label   = F->getName().str() + "_" + to->getName().str();
-        if (!to_label.compare(0, 9, "llvm.dbg")) {
+        while ((index = to_label.find(".")) != string::npos) {
+            to_label.replace(index, 1, "_");
+        }
+        if (to_label.substr(0, 4) != "llvm") {
             if (cfg.find(from_label) == cfg.end()) {
                 vector<tuple<float, string>> adj = {{1, to_label}};
                 cfg.insert(make_pair(from_label, adj));
