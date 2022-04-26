@@ -8,14 +8,13 @@ struct graph
 {
 	int vertex_num;
 	int row_num;
-	float inf;
+	float inf = 1;
 	vector<vector<float>> adj_matrix;
 
-	graph(int row_num, int vertex_num, float max_weight)
+	graph(int row_num, int vertex_num)
 	{
 		this->vertex_num = vertex_num;
 		this->row_num = row_num;
-		inf = max_weight*vertex_num;
 		vector<float> column(vertex_num + 1, inf);
 		adj_matrix = vector<vector<float>>(row_num + 1, column);
 	}
@@ -156,7 +155,6 @@ int main(int argc, char** argv)
 	map<int, string> rev_vertex_ind;
 
 	int from_ind = 0, to_ind = cfg.size();
-	float max_weight = 0;
 	cout << "\nСontrol flow graph:\n";
 	for (auto const&[from, to_s]: cfg)
 	{
@@ -173,20 +171,19 @@ int main(int argc, char** argv)
 				vertex_ind[to] = ++to_ind;
 				rev_vertex_ind[to_ind] = to;
 			}
-			float inv_weight = weight == 0 ? 0 : 1/weight;
-			if (inv_weight > max_weight)
-				max_weight = inv_weight;
 		}
 	}
-	auto cur_graph = graph(from_ind, to_ind, max_weight);
+
+	auto cur_graph = graph(from_ind, to_ind);
 	for (auto const&[from, to_s]: cfg)
 	{
 		from_ind = vertex_ind[from];
-		//cur_graph.adj_matrix[from_ind][from_ind] = max_weight + 1;
+		// cur_graph.adj_matrix[from_ind][from_ind] = 0;
 		for (auto const&[weight, to]: to_s)
 		{
 			to_ind = vertex_ind[to];
-			cur_graph.adj_matrix[from_ind][to_ind] = weight == 0 ? 0 : 1/weight;
+			float cur_weight = to_ind <= cur_graph.row_num? -weight: -weight - 1;
+			cur_graph.adj_matrix[from_ind][to_ind] = cur_weight;
 		}
 	}
 	auto matching = get_matching(cur_graph);
