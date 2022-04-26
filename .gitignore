@@ -37,3 +37,8 @@ main
 cmake-build-debug/*
 CMakeLists.txt
 .idea/*
+
+# Also
+*.prof
+*.profdata
+*.profraw
