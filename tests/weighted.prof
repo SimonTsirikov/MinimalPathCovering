@@ -1,45 +1,45 @@
-    1|      0|void help(int a) {
-    2|      0|    if (a == 1) {
+    1|      2|void help(int a) {
+    2|      2|    if (a == 1) {
   ------------------
-  |  Branch (2:9): [True: 0, False: 0]
+  |  Branch (2:9): [True: 1, False: 1]
   ------------------
-    3|      0|        return;
-    4|      0|    } else {
-    5|      0|        while (a == 3) {};
+    3|      1|        return;
+    4|      1|    } else {
+    5|      1|        while (a == 3) {};
   ------------------
-  |  Branch (5:16): [True: 0, False: 0]
+  |  Branch (5:16): [True: 0, False: 1]
   ------------------
-    6|      0|    }
-    7|      0|}
+    6|      1|    }
+    7|      2|}
     8|       |
-    9|      1|int main(int argc, char** argv) {
-   10|      1|    if (argc == 1) {
+    9|      3|int main(int argc, char** argv) {
+   10|      3|    if (argc == 1) {
   ------------------
-  |  Branch (10:9): [True: 1, False: 0]
+  |  Branch (10:9): [True: 1, False: 2]
   ------------------
-   11|      1|        LABEL:
-   12|    101|        for (int i=0; i<100; i++) {}
+   11|      2|        LABEL:
+   12|    202|        for (int i=0; i<100; i++) {}
   ------------------
-  |  Branch (12:23): [True: 100, False: 1]
+  |  Branch (12:23): [True: 200, False: 2]
   ------------------
-   13|      1|    } else {
-   14|      0|        if (strcmp(argv[1], "exploit")) {
+   13|      2|    } else {
+   14|      2|        if (strcmp(argv[1], "exploit")) {
   ------------------
-  |  Branch (14:13): [True: 0, False: 0]
+  |  Branch (14:13): [True: 1, False: 1]
   ------------------
-   15|      0|            goto LABEL;
-   16|      0|        } else {
-   17|      0|            int buf = argc;
-   18|      0|            while (buf > 0) {
+   15|      1|            goto LABEL;
+   16|      1|        } else {
+   17|      1|            int buf = argc;
+   18|      3|            while (buf > 0) {
   ------------------
-  |  Branch (18:20): [True: 0, False: 0]
+  |  Branch (18:20): [True: 2, False: 1]
   ------------------
-   19|      0|                buf--;
-   20|      0|                help(buf);
-   21|      0|            }
-   22|      0|        }
-   23|      0|    }
+   19|      2|                buf--;
+   20|      2|                help(buf);
+   21|      2|            }
+   22|      1|        }
+   23|      2|    }
    24|       |
-   25|      1|    return 0;
-   26|      1|}
+   25|      3|    return 0;
+   26|      3|}
 

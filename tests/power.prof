@@ -1,0 +1,16 @@
+    1|       |int exponent = 10;
+    2|       |float base = 2;
+    3|       |
+    4|       |int main() 
+    5|      1|{
+    6|      1|    float result = 1;
+    7|     11|    while (exponent != 0) {
+  ------------------
+  |  Branch (7:12): [True: 10, False: 1]
+  ------------------
+    8|     10|        result *= base;
+    9|     10|        --exponent;
+   10|     10|    }
+   11|      1|    return 0;
+   12|      1|}
+
