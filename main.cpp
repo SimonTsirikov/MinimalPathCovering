@@ -189,7 +189,6 @@ int main(int argc, char** argv)
 			cur_graph.adj_matrix[from_ind][to_ind] = weight == 0 ? 0 : 1/weight;
 		}
 	}
-	print_matrix(cur_graph.adj_matrix);
 	auto matching = get_matching(cur_graph);
 	auto min_path_covery = get_min_path_covery(matching, cur_graph);
 
