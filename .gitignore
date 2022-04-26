@@ -39,5 +39,6 @@ CMakeLists.txt
 .idea/*
 
 # Also
+*.prof
 *.profdata
 *.profraw

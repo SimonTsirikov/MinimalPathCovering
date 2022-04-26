@@ -16,7 +16,7 @@ do
     clang -Wno-implicit-function-declaration -emit-llvm -fno-discard-value-names  -g -S $in -o $ll
     clang -fprofile-instr-generate -fcoverage-mapping $in -o $name
     LLVM_PROFILE_FILE=$profraw ./$name
-	llvm-profdata merge -sparse $profraw -o $profdata
+	llvm-profdata merge -sparse $profraw $profraw -o $profdata
 	llvm-cov show $name -instr-profile=$profdata --show-branches=count > $prof
 	rm -rf $name
 	cd ../

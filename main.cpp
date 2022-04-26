@@ -8,20 +8,20 @@ struct graph
 {
 	int vertex_num;
 	int row_num;
-	int inf;
-	vector<vector<int>> adj_matrix;
+	float inf;
+	vector<vector<float>> adj_matrix;
 
-	graph(int row_num, int vertex_num, int max_weight)
+	graph(int row_num, int vertex_num, float max_weight)
 	{
 		this->vertex_num = vertex_num;
 		this->row_num = row_num;
 		inf = max_weight*vertex_num;
-		vector<int> column(vertex_num + 1, inf);
-		adj_matrix = vector<vector<int>>(row_num + 1, column);
+		vector<float> column(vertex_num + 1, inf);
+		adj_matrix = vector<vector<float>>(row_num + 1, column);
 	}
 };
 
-void print_matrix(const vector<vector<int>>& matrix)
+void print_matrix(const vector<vector<float>>& matrix)
 {
 	for (auto const& row: matrix)
 	{
@@ -36,24 +36,24 @@ vector<int> get_matching(const graph& input_graph)
 	int vertex_num = input_graph.vertex_num;
 	int row_num = input_graph.row_num;
 
-	vector<int> row_sub(row_num + 1, 0), column_sub(vertex_num + 1, 0);
+	vector<float> row_sub(row_num + 1, 0), column_sub(vertex_num + 1, 0);
 	vector<int> matching(vertex_num + 1, 0), way(vertex_num + 1, 0);
 	for (int i = 1; i <= row_num; ++i)
 	{
 		matching[0] = i;
 		int cur_j = 0, min_j;
-		vector<int> mins(vertex_num + 1, input_graph.inf);
+		vector<float> mins(vertex_num + 1, input_graph.inf);
 		vector<bool> visited(vertex_num + 1, false);
 		do
 		{
 			visited[cur_j] = true;
 			int cur_i = matching[cur_j];
-			int delta = input_graph.inf;
+			float delta = input_graph.inf;
 			for (int j = 1; j <= vertex_num; ++j)
 			{
 				if (!visited[j])
 				{
-					int cur_value = input_graph.adj_matrix[cur_i][j] - row_sub[cur_i] - column_sub[j];
+					float cur_value = input_graph.adj_matrix[cur_i][j] - row_sub[cur_i] - column_sub[j];
 					if (cur_value < mins[j])
 					{
 						mins[j] = cur_value;
@@ -94,7 +94,7 @@ vector<int> get_matching(const graph& input_graph)
 		if (matching[j] > 0)
 		{
 			result[matching[j]] = j;
-			int cur_weight = input_graph.adj_matrix[matching[j]][j];
+			float cur_weight = input_graph.adj_matrix[matching[j]][j];
 			if (cur_weight == input_graph.inf)
 				result[j] = j;
 		}
@@ -156,7 +156,7 @@ int main(int argc, char** argv)
 	map<int, string> rev_vertex_ind;
 
 	int from_ind = 0, to_ind = cfg.size();
-	int max_weight = 0;
+	float max_weight = 0;
 	cout << "\nСontrol flow graph:\n";
 	for (auto const&[from, to_s]: cfg)
 	{
@@ -173,8 +173,9 @@ int main(int argc, char** argv)
 				vertex_ind[to] = ++to_ind;
 				rev_vertex_ind[to_ind] = to;
 			}
-			if (1/weight > max_weight)
-				max_weight = 1/weight;
+			float inv_weight = weight == 0 ? 0 : 1/weight;
+			if (inv_weight > max_weight)
+				max_weight = inv_weight;
 		}
 	}
 	auto cur_graph = graph(from_ind, to_ind, max_weight);
@@ -188,7 +189,7 @@ int main(int argc, char** argv)
 			cur_graph.adj_matrix[from_ind][to_ind] = weight == 0 ? 0 : 1/weight;
 		}
 	}
-
+	print_matrix(cur_graph.adj_matrix);
 	auto matching = get_matching(cur_graph);
 	auto min_path_covery = get_min_path_covery(matching, cur_graph);
 
