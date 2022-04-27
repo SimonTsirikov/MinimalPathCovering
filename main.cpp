@@ -32,7 +32,7 @@ void print_matrix(const vector<vector<float>>& matrix)
 	}
 }
 
-vector<int> get_matching(const graph& input_graph)
+map<int, int> get_matching(graph input_graph)
 {
 	int vertex_num = input_graph.vertex_num;
 	int row_num = input_graph.row_num;
@@ -89,30 +89,38 @@ vector<int> get_matching(const graph& input_graph)
 		while (cur_j);
 	}
 
-	vector<int> result(row_num + 1, 0);
+	map<int, int> result;
 	for (int j = 1; j <= vertex_num; j++)
 	{
 		if (matching[j] > 0)
 		{
 			result[matching[j]] = j;
-			float cur_weight = input_graph.adj_matrix[matching[j]][j];
-			if (cur_weight == input_graph.inf)
-				result[j] = j;
+			if (j != matching[j])
+				result[-j] = matching[j];
 		}
 	}
 	return result;
 }
 
-vector<vector<int>> get_min_path_covery(vector<int> matching, const graph& input_graph)
+vector<vector<int>> get_min_path_covery(map<int, int> matching, const graph& input_graph)
 {
 	vector<vector<int>> result;
 	vector<bool> visited(input_graph.vertex_num, false);
 	int state_num = 0;
-	for (int from = 1; from <= input_graph.row_num; from++)
+	for (int i = 1; i <= input_graph.row_num; i++)
 	{
-		int to = matching[from];
-		if (!visited[from])
+		int from = i;
+		int to = matching[i];
+		if (!visited[from] && input_graph.adj_matrix[from][to] != input_graph.inf)
 		{
+			while (matching[-from] != 0 && matching[-from] != to)
+			{
+				int pre_from = matching[-from];
+				if (input_graph.adj_matrix[pre_from][from] == input_graph.inf)
+					break;
+				from = pre_from;
+			}
+			to = matching[from];
 			vector<int> cur_vector;
 			cur_vector.push_back(from);
 			++state_num;
@@ -123,7 +131,12 @@ vector<vector<int>> get_min_path_covery(vector<int> matching, const graph& input
 				++state_num;
 				visited[to] = true;
 				if (to <= input_graph.row_num)
+				{
+					from = to;
 					to = matching[to];
+					if (input_graph.adj_matrix[from][to] == input_graph.inf)
+						break;
+				}
 			}
 			result.push_back(cur_vector);
 		}
@@ -181,15 +194,12 @@ int main(int argc, char** argv)
 	for (auto const&[from, to_s]: cfg)
 	{
 		from_ind = vertex_ind[from];
-		cur_graph.adj_matrix[from_ind][from_ind] = 1;
 		for (auto const&[weight, to]: to_s)
 		{
 			to_ind = vertex_ind[to];
-			float cur_weight = to_ind <= cur_graph.row_num? -weight: -weight - 1;
-			cur_graph.adj_matrix[from_ind][to_ind] = cur_weight;
+			cur_graph.adj_matrix[from_ind][to_ind] = -weight;
 		}
 	}
-	// print_matrix(cur_graph.adj_matrix);
 	auto matching = get_matching(cur_graph);
 	auto min_path_covery = get_min_path_covery(matching, cur_graph);
 
@@ -197,12 +207,12 @@ int main(int argc, char** argv)
 	for (auto const &path: min_path_covery)
 	{
 		bool first = true;
-		for (auto const &column_sub: path)
+		for (auto const &ind: path)
 		{
 			if (!first)
 				cout << " -> ";
 			first = false;
-			cout << rev_vertex_ind[column_sub];
+			cout << rev_vertex_ind[ind];
 		}
 		cout << ";" << endl;
 	}
