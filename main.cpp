@@ -173,19 +173,27 @@ int main(int argc, char** argv)
 	cout << "\nСontrol flow graph:\n";
 	for (auto const&[from, to_s]: cfg)
 	{
-		if (vertex_ind.find(from) == vertex_ind.end())
+		vector<string> vertex_queue;
+		vertex_queue.push_back(from);
+		while (!vertex_queue.empty())
 		{
-			vertex_ind[from] = ++from_ind;
-			rev_vertex_ind[from_ind] = from;
+			string cur_vertex = vertex_queue[0];
+			vertex_queue.erase(vertex_queue.begin());
+			if (vertex_ind[cur_vertex] == 0)
+			{
+				int cur_ind = cfg.find(cur_vertex) == cfg.end() ? ++to_ind : ++from_ind;
+				vertex_ind[cur_vertex] = cur_ind;
+				rev_vertex_ind[cur_ind] = cur_vertex;
+			}
+			for (auto const&[weight, to]: to_s)
+			{
+				if (vertex_ind[to] == 0)
+					vertex_queue.push_back(to);
+			}
 		}
 		for (auto const&[weight, to]: to_s)
 		{
 			cout << from << " -> " << to << " [ label=\"" << weight << "\" ];" << endl;
-			if (cfg.find(to) == cfg.end() && vertex_ind.find(to) == vertex_ind.end())
-			{
-				vertex_ind[to] = ++to_ind;
-				rev_vertex_ind[to_ind] = to;
-			}
 			if (weight > max_weight)
 				max_weight = weight;
 		}
