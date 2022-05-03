@@ -225,5 +225,6 @@ int main(int argc, char** argv)
 		cout << ";" << endl;
 	}
 	cout << endl;
+	arrange_ir(argv[1], min_path_covery, rev_vertex_ind);
 	return 0;
 }
