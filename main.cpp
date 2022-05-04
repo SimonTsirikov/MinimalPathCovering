@@ -16,7 +16,7 @@ struct graph
 	{
 		this->vertex_num = vertex_num;
 		this->row_num = row_num;
-		this->inf = max_weight*vertex_num;
+		this->inf = 2*max_weight*vertex_num;
 		vector<float> column(vertex_num + 1, inf);
 		adj_matrix = vector<vector<float>>(row_num + 1, column);
 	}
@@ -42,14 +42,14 @@ map<int, int> get_matching(graph input_graph)
 	for (int i = 1; i <= row_num; ++i)
 	{
 		matching[0] = i;
-		int cur_j = 0, min_j;
-		vector<float> mins(vertex_num + 1, input_graph.inf);
+		int cur_j = 0;
+		vector<float> mins(vertex_num + 1, input_graph.inf + 1);
 		vector<bool> visited(vertex_num + 1, false);
 		do
 		{
 			visited[cur_j] = true;
-			int cur_i = matching[cur_j];
-			float delta = input_graph.inf;
+			int cur_i = matching[cur_j], min_j = 0;
+			float delta = input_graph.inf + 1;
 			for (int j = 1; j <= vertex_num; ++j)
 			{
 				if (!visited[j])
@@ -82,7 +82,7 @@ map<int, int> get_matching(graph input_graph)
 		while (matching[cur_j] != 0);
 		do
 		{
-			min_j = way[cur_j];
+			int min_j = way[cur_j];
 			matching[cur_j] = matching[min_j];
 			cur_j = min_j;
 		}

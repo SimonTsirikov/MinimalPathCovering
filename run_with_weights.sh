@@ -18,9 +18,9 @@ do
     LLVM_PROFILE_FILE=$profraw ./$name
 	llvm-profdata merge -sparse $profraw $profraw -o $profdata
 	llvm-cov show $name -instr-profile=$profdata --show-branches=count > $prof
-	rm -rf $name
+	# rm -rf $name
 	cd ../
-	./main tests/$ll tests/$prof
+	./main tests/$ll tests/$prof 
 	cd tests
 done
 
